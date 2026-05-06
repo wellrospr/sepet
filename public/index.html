@@ -331,6 +331,59 @@
   .lf-error { font-size: 10px; color: #c4595a; min-height: 16px; letter-spacing: 0.06em; }
   .lf-btn { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; padding: 10px 24px; background: var(--amber); color: var(--bg); border: none; border-radius: 2px; cursor: pointer; transition: background 0.2s; margin-top: 0.5rem; }
   .lf-btn:hover { background: var(--amber-lt); }
+
+  /* ════════ MOBILE RESPONSIVE ════════ */
+  @media(max-width: 768px) {
+    .pub-header { padding: 0.85rem 1.25rem; min-height: auto; flex-wrap: wrap; gap: 0.5rem; }
+    .logo-wrap { width: 100%; }
+    .logo-title { font-size: 1.8rem; }
+    .logo-sub { font-size: 10px; }
+    .nav-center { width: 100%; gap: 1.25rem; border-top: 1px solid var(--border); padding-top: 0.6rem; justify-content: center; }
+    .nav-link { font-size: 11px; }
+    .nav-right { display: none; }
+    .pub-subheader { padding: 0.6rem 1.25rem; position: relative; top: auto !important; flex-wrap: wrap; gap: 0.4rem; }
+    .sub-left { gap: 0.4rem; flex-wrap: wrap; }
+    .tag-btn { font-size: 10px; padding: 4px 10px; }
+    .sub-right { font-size: 10px; }
+    .featured-wrap { padding: 1.25rem 1.25rem 0; }
+    .featured-card { grid-template-columns: 1fr !important; }
+    .featured-img { min-height: 220px; }
+    .featured-body { padding: 1.25rem; }
+    .featured-title { font-size: 1.15rem; }
+    .featured-excerpt { font-size: 12px; }
+    .gallery-section { padding: 1.25rem; }
+    .gallery-grid { columns: 1 !important; }
+    .photo-title-txt { font-size: 12px; }
+    .photo-date-txt { font-size: 10px; }
+    .modal-bg { padding: 0 !important; align-items: flex-end; background: rgba(5,4,2,0.98); }
+    .modal-box { grid-template-columns: 1fr !important; max-width: 100% !important; width: 100%; max-height: 95vh; border-radius: 12px 12px 0 0; overflow-y: auto; }
+    .modal-img-wrap { min-height: 260px; max-height: 45vh; }
+    .modal-img { height: 100%; object-fit: cover; }
+    .modal-body { padding: 1.25rem 1.25rem 0; }
+    .modal-excerpt { font-size: 12px; }
+    .modal-img-title { font-size: 1rem; }
+    .modal-nav-btn { font-size: 10px; padding: 5px 10px; }
+    .thumb { width: 50px; height: 38px; }
+    .thumb-strip { padding: 0.75rem 1.25rem; }
+    .about-wrap { padding: 2rem 1.25rem; }
+    .about-grid { grid-template-columns: 1fr !important; gap: 2rem; }
+    .about-name { font-size: 2rem; }
+    .about-bio p { font-size: 13px; }
+    .about-img-wrap { position: relative !important; top: auto !important; }
+    .contact-wrap { padding: 2rem 1.25rem; }
+    .contact-grid { grid-template-columns: 1fr !important; gap: 2rem; }
+    .contact-title { font-size: 2rem; }
+    .pub-footer { padding: 1.5rem 1.25rem; flex-direction: column; gap: 0.5rem; }
+    .sidebar { display: none !important; }
+    .adm-topbar { padding: 1rem 1.25rem; }
+    .adm-content { padding: 1.25rem; }
+    .stats-row { grid-template-columns: 1fr 1fr !important; gap: 8px; }
+    .stat-val { font-size: 1.4rem; }
+    .form-grid { grid-template-columns: 1fr !important; }
+    .posts-table th, .posts-table td { font-size: 10px; padding: 8px 4px; }
+    .post-thumb { width: 36px; height: 27px; margin-right: 6px; }
+    .login-box { padding: 2rem 1.5rem; }
+  }
 </style>
 </head>
 <body>
