@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEPET</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  /* ── RESET ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Mono', monospace; background: #100d09; color: #c9bca8; min-height: 100vh; }
+
+  /* ── VARIABLES ── */
+  :root {
+    --bg:        #100d09;
+    --bg-card:   #150f08;
+    --bg-footer: #110e08;
+    --bg-panel:  #0f0d0b;
+    --border:    #2a2318;
+    --border-lt: #1e1a10;
+    --amber:     #c4895a;
+    --amber-lt:  #d4a574;
+    --beige-lt:  #e8dece;
+    --beige-md:  #c9bca8;
+    --beige-dk:  #a08c78;
+    --sage:      #7a8c72;
+    --sage-dk:   #5c6e54;
+    --text-pri:  #e8dece;
+    --text-sec:  #c9bca8;
+    --text-mut:  #7a7068;
+    --text-dim:  #4a4335;
+    --text-fnt:  #3a3528;
+  }
+
+  /* ── VIEWS ── */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ════════════════════════════════
+     GALERÍA PÚBLICA
+  ════════════════════════════════ */
+
+  /* Header */
+  .pub-header {
+    padding: 0 3rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 96px;
+    gap: 2rem;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 50;
+  }
+  .logo-wrap { display: flex; flex-direction: column; gap: 6px; }
+  .logo-title { font-family: 'Playfair Display', serif; font-size: 2.6rem; font-weight: 400; color: var(--text-pri); letter-spacing: -0.01em; line-height: 1; }
+  .logo-title em { font-style: italic; color: var(--amber); }
+  .logo-sub { font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-fnt); }
+  .nav-center { display: flex; gap: 2.5rem; align-items: center; }
+  .nav-link { font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); text-decoration: none; cursor: pointer; padding: 5px 0; border-bottom: 1px solid transparent; transition: color 0.2s; }
+  .nav-link:hover { color: var(--text-sec); }
+  .nav-link.active { color: var(--text-sec); border-bottom-color: var(--amber); }
+  .nav-right { display: flex; gap: 1rem; }
+  .nav-tag { font-size: 11px; padding: 6px 16px; border-radius: 1px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; border: 1px solid #3a2e1a; color: var(--amber); background: #1e1408; font-family: 'DM Mono', monospace; transition: background 0.2s; }
+  .nav-tag:hover { background: #2a1c0a; }
+
+  /* Subheader filtros */
+  .pub-subheader {
+    padding: 0.85rem 3rem;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border-lt);
+    position: sticky; top: 96px;
+    background: var(--bg);
+    z-index: 49;
+  }
+  .sub-left { display: flex; gap: 0.85rem; align-items: center; flex-wrap: wrap; }
+  .tag-btn { font-family: 'DM Mono', monospace; font-size: 12px; padding: 6px 16px; border-radius: 2px; border: 1px solid var(--border); background: transparent; color: var(--text-dim); cursor: pointer; letter-spacing: 0.06em; transition: all 0.2s; }
+  .tag-btn:hover { border-color: var(--amber); color: var(--amber); }
+  .tag-btn.active { background: var(--amber); border-color: var(--amber); color: var(--bg); }
+  .sub-right { font-size: 12px; color: var(--text-fnt); letter-spacing: 0.1em; white-space: nowrap; }
+
+  /* Featured */
+  .featured-wrap { padding: 2.5rem 2.5rem 0; }
+  .featured-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 8px; }
+  .featured-eyebrow::before { content: ''; display: inline-block; width: 20px; height: 1px; background: var(--sage); }
+  .featured-card { display: grid; grid-template-columns: 65fr 35fr; border: 1px solid var(--border); border-radius: 2px; overflow: hidden; cursor: pointer; }
+  .featured-img-wrap { overflow: hidden; }
+  .featured-img { width: 100%; height: 100%; min-height: 340px; object-fit: cover; display: block; filter: sepia(22%) contrast(1.06) brightness(0.88); transition: transform 0.6s ease, filter 0.5s ease; }
+  .featured-card:hover .featured-img { transform: scale(1.03); filter: sepia(10%) contrast(1.08) brightness(0.95); }
+  .featured-body { background: #161310; padding: 2rem 1.75rem; display: flex; flex-direction: column; justify-content: space-between; border-left: 1px solid var(--border); }
+  .featured-tag { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--beige-dk); margin-bottom: 1rem; display: block; }
+  .featured-title { font-family: 'Playfair Display', serif; font-size: clamp(1.3rem, 2vw, 1.7rem); color: var(--text-pri); font-style: italic; line-height: 1.35; margin-bottom: 1rem; }
+  .featured-divider { width: 28px; height: 1px; background: var(--amber); margin-bottom: 1rem; }
+  .featured-excerpt { font-size: 13px; color: var(--text-mut); line-height: 1.9; }
+  .featured-date { font-size: 11px; color: var(--text-dim); letter-spacing: 0.1em; margin-bottom: 1rem; margin-top: 1.5rem; }
+  .read-link { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--amber); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; border-bottom: 1px solid #3a2a1a; padding-bottom: 2px; }
+  .read-link::after { content: '→'; }
+
+  /* Galería grid */
+  .gallery-section { padding: 2.5rem; }
+  .gallery-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
+  .gallery-label { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #5a5248; display: flex; align-items: center; gap: 10px; }
+  .gallery-label::after { content: ''; display: inline-block; width: 32px; height: 1px; background: var(--border); }
+  .gallery-count { font-size: 11px; color: var(--text-fnt); letter-spacing: 0.08em; }
+  .gallery-grid { columns: 2; column-gap: 1.5rem; }
+  .photo-card { break-inside: avoid; margin-bottom: 1.5rem; cursor: pointer; background: var(--bg-card); border: 1px solid var(--border); border-radius: 2px; overflow: hidden; transition: border-color 0.3s; }
+  .photo-card:hover { border-color: var(--beige-dk); }
+  .photo-frame { overflow: hidden; position: relative; }
+  .photo-img { width: 100%; display: block; filter: sepia(18%) contrast(1.06) brightness(0.88); transition: transform 0.6s ease, filter 0.5s ease; }
+  .photo-card:hover .photo-img { transform: scale(1.04); filter: sepia(6%) contrast(1.1) brightness(0.96); }
+  .photo-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(8,5,2,0.92)); padding: 2.5rem 1.25rem 1rem; opacity: 0; transition: opacity 0.35s; }
+  .photo-card:hover .photo-overlay { opacity: 1; }
+  .overlay-title { font-family: 'Playfair Display', serif; font-size: 16px; color: var(--text-pri); font-style: italic; }
+  .photo-footer { padding: 0.85rem 1.25rem; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-lt); background: var(--bg-footer); }
+  .photo-meta-left { display: flex; flex-direction: column; gap: 3px; }
+  .photo-title-txt { font-size: 13px; color: var(--text-sec); }
+  .photo-date-txt { font-size: 11px; color: var(--text-dim); letter-spacing: 0.08em; }
+  .photo-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+  .photo-tag { font-size: 10px; padding: 3px 9px; border-radius: 1px; letter-spacing: 0.07em; text-transform: uppercase; }
+  .tag-noche  { border: 1px solid #1e2e3a; color: #4a7a8a; background: #0d1a22; }
+  .tag-textura{ border: 1px solid #2e2a1a; color: #8a7a4a; background: #1a1608; }
+  .tag-gente  { border: 1px solid #2a1e2e; color: #7a4a8a; background: #160d1a; }
+  .tag-luz    { border: 1px solid #3a2e1a; color: var(--amber); background: #1e1408; }
+  .tag-calle  { border: 1px solid #1e2e1e; color: var(--sage-dk); background: #0e160e; }
+  .tag-retrato{ border: 1px solid #2e2418; color: var(--beige-dk); background: #1a1208; }
+
+  /* Quote block */
+  .quote-wrap { column-span: all; margin-bottom: 1.5rem; display: flex; justify-content: center; }
+  .quote-block { display: flex; align-items: center; gap: 1rem; padding: 0.9rem 1.5rem; border-left: 2px solid var(--beige-md); background: #130e08; max-width: 55%; }
+  .quote-glyph { font-family: 'Playfair Display', serif; font-size: 2rem; color: #2a2415; line-height: 1; flex-shrink: 0; }
+  .quote-inner { display: flex; flex-direction: column; gap: 4px; }
+  .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 0.9rem; color: var(--beige-dk); line-height: 1.55; }
+  .quote-text em { color: var(--beige-lt); }
+  .quote-meta { font-size: 9px; color: #3a3528; letter-spacing: 0.1em; }
+
+  /* Footer galería */
+  .pub-footer { padding: 2rem 2.5rem; border-top: 1px solid var(--border-lt); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .footer-sig { font-family: 'Playfair Display', serif; font-style: italic; font-size: 0.95rem; color: #2e2b28; }
+  .footer-note { font-size: 9px; color: #2e2b28; letter-spacing: 0.1em; }
+
+  /* ── MODAL ── */
+  .modal-bg { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(5,4,2,0.97); z-index: 200; align-items: center; justify-content: center; padding: 1.5rem; }
+  .modal-bg.open { display: flex; }
+  .modal-box { display: grid; grid-template-columns: 1.6fr 1fr; max-width: 1100px; width: 100%; height: 88vh; max-height: 820px; border: 1px solid var(--border); background: var(--bg); border-radius: 2px; overflow: hidden; }
+  .modal-img-wrap { overflow: hidden; position: relative; height: 100%; }
+  .modal-img { width: 100%; height: 100%; object-fit: contain; display: block; filter: sepia(15%) contrast(1.06) brightness(0.9); image-orientation: from-image; }
+  .modal-img-footer { position: absolute; bottom: 0; left: 0; right: 0; padding: 1.5rem 1.25rem 1rem; background: linear-gradient(transparent, rgba(6,4,2,0.9)); }
+  .modal-img-title { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.1rem; color: var(--text-pri); line-height: 1.3; }
+  .modal-body { padding: 1.75rem 1.75rem 0; display: flex; flex-direction: column; border-left: 1px solid var(--border); background: var(--bg-panel); height: 100%; overflow-y: auto; }
+  .modal-body-top { display: flex; flex-direction: column; gap: 0.85rem; flex: 1; }
+  .modal-eyebrow { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--sage); display: flex; align-items: center; gap: 8px; }
+  .modal-eyebrow::before { content: ''; display: inline-block; width: 16px; height: 1px; background: var(--sage); }
+  .modal-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .modal-tags .photo-tag { font-size: 10px; padding: 4px 10px; }
+  .modal-divider { width: 28px; height: 1px; background: var(--amber); }
+  .modal-excerpt { font-size: 13px; color: var(--text-mut); line-height: 1.9; }
+  .modal-date-txt { font-size: 11px; color: var(--text-fnt); letter-spacing: 0.1em; margin-top: 0.5rem; }
+  .modal-img-title { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.3rem; color: var(--text-pri); line-height: 1.3; }
+  .modal-nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 0 1.25rem; }
+  .modal-nav-btn { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--text-dim); background: none; border: 1px solid var(--border); padding: 6px 16px; border-radius: 2px; cursor: pointer; transition: all 0.2s; }
+  .modal-nav-btn:hover { border-color: var(--beige-md); color: var(--beige-md); }
+  .modal-close-btn { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--text-fnt); background: none; border: none; cursor: pointer; transition: color 0.2s; }
+  .modal-close-btn:hover { color: var(--amber); }
+  .thumb-strip { border-top: 1px solid var(--border-lt); padding: 1rem 1.75rem; display: flex; gap: 8px; overflow-x: auto; background: #0c0a08; }
+  .thumb-strip::-webkit-scrollbar { height: 3px; }
+  .thumb-strip::-webkit-scrollbar-track { background: #1a1714; }
+  .thumb-strip::-webkit-scrollbar-thumb { background: #3a3530; }
+  .thumb { width: 64px; height: 48px; flex-shrink: 0; overflow: hidden; border-radius: 1px; border: 1px solid var(--border); cursor: pointer; transition: border-color 0.2s, opacity 0.2s; opacity: 0.45; }
+  .thumb:hover { opacity: 0.75; }
+  .thumb.active { border-color: var(--beige-md); opacity: 1; }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; filter: sepia(20%) brightness(0.85); image-orientation: from-image; }
+
+  /* ════════════════════════════════
+     PANEL ADMIN
+  ════════════════════════════════ */
+  .admin-wrap { display: flex; min-height: 100vh; }
+  .sidebar { width: 210px; min-height: 100vh; border-right: 1px solid var(--border); padding: 2rem 1.25rem; display: flex; flex-direction: column; gap: 0.2rem; flex-shrink: 0; background: #0b0906; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+  .sidebar-logo { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.1rem; color: var(--text-pri); margin-bottom: 1.75rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
+  .sidebar-logo span { color: var(--amber); }
+  .nav-section-lbl { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #2e2b28; margin: 1.25rem 0 0.4rem 8px; }
+  .adm-nav-item { font-size: 11px; letter-spacing: 0.06em; color: #4a4540; padding: 8px 10px; border-radius: 2px; cursor: pointer; transition: all 0.2s; border: none; background: none; text-align: left; width: 100%; font-family: 'DM Mono', monospace; }
+  .adm-nav-item:hover { color: var(--text-sec); background: #161310; }
+  .adm-nav-item.active { color: var(--text-pri); background: #1a1714; border-left: 2px solid var(--amber); padding-left: 8px; }
+  .sidebar-bottom { margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border-lt); }
+  .logout-btn { font-size: 10px; letter-spacing: 0.1em; color: #3a3530; background: none; border: none; cursor: pointer; padding: 6px 10px; font-family: 'DM Mono', monospace; transition: color 0.2s; }
+  .logout-btn:hover { color: var(--amber); }
+  .adm-main { flex: 1; overflow-y: auto; }
+  .adm-topbar { padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--bg); position: sticky; top: 0; z-index: 10; }
+  .adm-topbar-title { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #4a4540; }
+  .new-post-btn { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.08em; padding: 7px 18px; background: var(--amber); color: var(--bg); border: none; border-radius: 2px; cursor: pointer; transition: background 0.2s; }
+  .new-post-btn:hover { background: var(--amber-lt); }
+  .adm-content { padding: 2rem; }
+  .adm-panel { display: none; }
+  .adm-panel.active { display: block; }
+
+  /* Stats */
+  .stats-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 2.5rem; }
+  .stat-card { background: var(--bg-footer); border: 1px solid var(--border); border-radius: 2px; padding: 1.1rem 1.25rem; transition: border-color 0.2s; }
+  .stat-card:hover { border-color: var(--beige-dk); }
+  .stat-label { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: #4a4540; margin-bottom: 0.6rem; }
+  .stat-val { font-family: 'Playfair Display', serif; font-size: 1.75rem; color: var(--text-pri); line-height: 1; }
+  .stat-sub { font-size: 9px; color: #4a4540; margin-top: 5px; }
+  .stat-sub.up { color: var(--sage); }
+
+  /* Tabla entradas */
+  .section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+  .section-lbl { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #4a4540; display: flex; align-items: center; gap: 10px; }
+  .section-lbl::after { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--border); }
+  .view-all-btn { font-size: 10px; color: var(--amber); background: none; border: none; cursor: pointer; font-family: 'DM Mono', monospace; letter-spacing: 0.08em; }
+  .posts-table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; }
+  .posts-table th { font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: #3a3530; text-align: left; padding: 0 0 10px; border-bottom: 1px solid var(--border); }
+  .posts-table td { padding: 12px 0; border-bottom: 1px solid #161310; font-size: 11px; color: #6a6258; vertical-align: middle; }
+  .post-thumb { width: 44px; height: 33px; object-fit: cover; border-radius: 1px; filter: sepia(25%) brightness(0.82); margin-right: 12px; vertical-align: middle; border: 1px solid var(--border); }
+  .post-title-cell { display: flex; align-items: center; }
+  .post-title-text { font-size: 11px; color: var(--text-sec); }
+  .post-title-sub { font-size: 9px; color: #3a3530; margin-top: 2px; font-style: italic; font-family: 'Playfair Display', serif; }
+  .row-actions { display: flex; gap: 10px; min-width: 100px; }
+  .row-btn { font-size: 10px; color: #3a3530; background: none; border: none; cursor: pointer; font-family: 'DM Mono', monospace; padding: 3px 0; letter-spacing: 0.06em; transition: color 0.2s; white-space: nowrap; }
+  .row-btn:hover { color: var(--amber); }
+  .row-btn.del { color: #5a3030; }
+  .row-btn.del:hover { color: #c4595a; }
+  .tag-pub   { border: 1px solid #1e2e1e; color: var(--sage-dk); background: #0e160e; }
+  .tag-draft { border: 1px solid #2e2a1a; color: #8a7a4a; background: #1a1608; }
+
+  /* Formulario nueva entrada */
+  .upload-zone { border: 1px dashed var(--border); border-radius: 2px; padding: 2.5rem 2rem; text-align: center; margin-bottom: 2rem; cursor: pointer; transition: border-color 0.25s, background 0.25s; }
+  .upload-zone:hover { border-color: var(--amber); background: #100e0c; }
+  .upload-svg { margin: 0 auto 0.85rem; opacity: 0.35; }
+  .upload-text { font-size: 11px; color: #4a4540; line-height: 1.9; }
+  .upload-text strong { color: var(--amber); font-weight: 400; }
+  .upload-sub { font-size: 9px; color: #2e2b28; margin-top: 4px; letter-spacing: 0.04em; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+  .form-field { display: flex; flex-direction: column; gap: 6px; }
+  .form-field.full { grid-column: 1 / -1; }
+  .form-label { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: #4a4540; }
+  .form-input, .form-textarea, .form-select { background: var(--bg-footer); border: 1px solid var(--border); border-radius: 2px; padding: 9px 12px; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-sec); outline: none; transition: border-color 0.2s; width: 100%; }
+  .form-input:focus, .form-textarea:focus { border-color: var(--amber); }
+  .form-input::placeholder, .form-textarea::placeholder { color: #3a3530; }
+  .form-textarea { resize: vertical; min-height: 90px; line-height: 1.8; }
+  .form-actions { display: flex; gap: 10px; justify-content: flex-end; padding-top: 1rem; border-top: 1px solid var(--border-lt); }
+  .btn-draft { font-family: 'DM Mono', monospace; font-size: 10px; padding: 8px 18px; background: none; border: 1px solid var(--border); color: #6a6258; border-radius: 2px; cursor: pointer; letter-spacing: 0.06em; transition: all 0.2s; }
+  .btn-draft:hover { border-color: var(--beige-dk); color: var(--text-sec); }
+  .btn-pub { font-family: 'DM Mono', monospace; font-size: 10px; padding: 8px 22px; background: var(--amber); color: var(--bg); border: none; border-radius: 2px; cursor: pointer; letter-spacing: 0.06em; transition: background 0.2s; }
+  .btn-pub:hover { background: var(--amber-lt); }
+
+  /* Preview de imagen seleccionada */
+  .img-preview-wrap { display: none; margin-bottom: 1.5rem; position: relative; max-height: 280px; overflow: hidden; border-radius: 2px; border: 1px solid var(--border); }
+  .img-preview-wrap.show { display: block; }
+  .img-preview { width: 100%; max-height: 280px; object-fit: cover; display: block; filter: sepia(18%) contrast(1.06) brightness(0.88); }
+  .img-preview-label { position: absolute; bottom: 0; left: 0; right: 0; padding: 0.5rem 1rem; background: rgba(6,4,2,0.85); font-size: 9px; color: #4a4540; letter-spacing: 0.08em; }
+
+  /* Apariencia */
+  .pal-row { display: flex; gap: 6px; margin-bottom: 2rem; flex-wrap: wrap; }
+  .pal-dot { width: 20px; height: 20px; border-radius: 2px; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 700px) {
+    .gallery-grid { columns: 1; }
+    .featured-card { grid-template-columns: 1fr; }
+    .modal-box { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .pub-header { padding: 0 1.25rem; }
+    .gallery-section { padding: 1.25rem; }
+  }
+
+  /* ── SOBRE MÍ ── */
+  .about-wrap { padding: 4rem 3rem; max-width: 1100px; margin: 0 auto; }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+  @media(max-width:700px){ .about-grid { grid-template-columns: 1fr; gap: 3rem; } }
+  .about-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 8px; }
+  .about-name { font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--text-pri); letter-spacing: -0.02em; line-height: 1; margin-bottom: 1.5rem; }
+  .about-divider { width: 36px; height: 1px; background: var(--amber); margin-bottom: 2rem; }
+  .about-bio { display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 2.5rem; }
+  .about-bio p { font-size: 14px; color: var(--text-mut); line-height: 1.9; }
+  .about-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .about-tag { font-size: 10px; padding: 4px 12px; border: 1px solid var(--border); border-radius: 1px; color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase; }
+  .about-img-wrap { position: sticky; top: 120px; }
+  .about-img-placeholder { aspect-ratio: 3/4; border: 1px solid var(--border); border-radius: 2px; display: flex; align-items: center; justify-content: center; background: var(--bg-card); }
+  .about-img-label { font-size: 10px; color: var(--text-fnt); letter-spacing: 0.12em; text-transform: uppercase; }
+
+  /* ── CONTACTO ── */
+  .contact-wrap { padding: 4rem 3rem; max-width: 1100px; margin: 0 auto; }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 5rem; align-items: start; }
+  @media(max-width:700px){ .contact-grid { grid-template-columns: 1fr; gap: 3rem; } }
+  .contact-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage); margin-bottom: 1.5rem; }
+  .contact-title { font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--text-pri); font-style: italic; letter-spacing: -0.02em; line-height: 1; margin-bottom: 1.5rem; }
+  .contact-divider { width: 36px; height: 1px; background: var(--amber); margin-bottom: 2.5rem; }
+  .contact-info { display: flex; flex-direction: column; gap: 1.75rem; }
+  .contact-item { display: flex; flex-direction: column; gap: 5px; }
+  .contact-label { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-fnt); }
+  .contact-value { font-size: 13px; color: var(--beige-md); text-decoration: none; transition: color 0.2s; }
+  .contact-value:hover { color: var(--amber); }
+  .contact-form-label { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-fnt); margin-bottom: 1.75rem; display: flex; align-items: center; gap: 8px; }
+  .contact-form { display: flex; flex-direction: column; gap: 1.25rem; }
+  .cf-field { display: flex; flex-direction: column; gap: 6px; }
+  .cf-label { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-dim); }
+  .cf-input { background: var(--bg-card); border: 1px solid var(--border); border-radius: 2px; padding: 10px 14px; font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-sec); outline: none; transition: border-color 0.2s; }
+  .cf-input:focus { border-color: var(--amber); }
+  .cf-input::placeholder { color: var(--text-fnt); }
+  .cf-textarea { background: var(--bg-card); border: 1px solid var(--border); border-radius: 2px; padding: 10px 14px; font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-sec); outline: none; transition: border-color 0.2s; resize: vertical; min-height: 120px; line-height: 1.8; }
+  .cf-textarea:focus { border-color: var(--amber); }
+  .cf-textarea::placeholder { color: var(--text-fnt); }
+  .cf-actions { padding-top: 0.5rem; }
+  .cf-btn { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; padding: 10px 24px; background: none; border: 1px solid var(--border); color: var(--text-sec); cursor: pointer; border-radius: 2px; transition: all 0.2s; }
+  .cf-btn:hover { border-color: var(--amber); color: var(--amber); }
+  .cf-feedback { font-size: 11px; color: var(--sage); min-height: 20px; letter-spacing: 0.06em; }
+
+  .tag-item { display:flex; align-items:center; gap:8px; padding:6px 12px; border:1px solid var(--border); border-radius:2px; background:var(--bg-card); }
+  .tag-item-name { font-size:11px; color:var(--text-sec); letter-spacing:0.06em; }
+  .tag-item-del { font-size:11px; color:var(--text-fnt); background:none; border:none; cursor:pointer; font-family:"DM Mono",monospace; padding:0; transition:color 0.2s; line-height:1; }
+  .tag-item-del:hover { color:#c4595a; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════
+     VISTA: GALERÍA PÚBLICA
+════════════════════════════════ -->
+<div class="view active" id="view-gallery">
+
+  <header class="pub-header">
+    <div class="logo-wrap">
+      <div class="logo-title">S<em>EPET</em></div>
+      <div class="logo-sub">fotografía casual · desde 2026</div>
+    </div>
+    <nav class="nav-center">
+      <a class="nav-link active" onclick="switchView('gallery'); setActiveNav(this)">galería</a>
+      <a class="nav-link" onclick="switchView('about'); setActiveNav(this)">sobre mí</a>
+      <a class="nav-link" onclick="switchView('contact'); setActiveNav(this)">contacto</a>
+    </nav>
+    <div class="nav-right">
+      <button class="nav-tag" onclick="switchView('admin')">acceso admin</button>
+    </div>
+  </header>
+
+  <div class="pub-subheader">
+    <div class="sub-left" id="filter-bar">
+      <button class="tag-btn active" onclick="filterPhotos(this,'todo')">todo</button>
+      <button class="tag-btn" onclick="filterPhotos(this,'calle')">calle</button>
+      <button class="tag-btn" onclick="filterPhotos(this,'luz')">luz</button>
+      <button class="tag-btn" onclick="filterPhotos(this,'noche')">noche</button>
+      <button class="tag-btn" onclick="filterPhotos(this,'gente')">gente</button>
+      <button class="tag-btn" onclick="filterPhotos(this,'textura')">textura</button>
+      <button class="tag-btn" onclick="filterPhotos(this,'retrato')">retrato</button>
+    </div>
+    <div class="sub-right" id="photo-count">11 fotos</div>
+  </div>
+
+  <!-- Featured -->
+  <div class="featured-wrap">
+    <div class="featured-eyebrow">entrada destacada</div>
+    <div class="featured-card" onclick="openModal(0)">
+      <div class="featured-img-wrap">
+        <img class="featured-img" src="" alt=""/>
+      </div>
+      <div class="featured-body">
+        <div>
+          <span class="featured-tag">—</span>
+          <div class="featured-title">—</div>
+          <div class="featured-divider"></div>
+          <div class="featured-excerpt"></div>
+        </div>
+        <div>
+          <div class="featured-date"></div>
+          <a class="read-link" href="#">ver más</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Galería -->
+  <div class="gallery-section">
+    <div class="gallery-header">
+      <span class="gallery-label">galería</span>
+      <span class="gallery-count" id="gallery-count">10 fotos</span>
+    </div>
+    <div class="gallery-grid" id="gallery-grid">
+    </div>
+  </div>
+
+  <footer class="pub-footer">
+    <div class="footer-sig">SEPET — fotografías de paso</div>
+    <div class="footer-note">© 2026</div>
+  </footer>
+
+</div><!-- /view-gallery -->
+
+
+<!-- ════════════════════════════════
+     MODAL
+════════════════════════════════ -->
+<div class="modal-bg" id="modal" onclick="handleBgClick(event)">
+  <div class="modal-box">
+    <div class="modal-img-wrap">
+      <img class="modal-img" id="modal-img" src="" alt=""/>
+      <div class="modal-img-footer">
+        <div class="modal-img-title" id="modal-img-title"></div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-body-top">
+        <div class="modal-eyebrow" id="modal-eyebrow"></div>
+        <div class="modal-tags" id="modal-tags"></div>
+        <div class="modal-divider"></div>
+        <div class="modal-excerpt" id="modal-excerpt"></div>
+        <div class="modal-date-txt" id="modal-date"></div>
+      </div>
+      <div class="modal-nav">
+        <button class="modal-nav-btn" onclick="navigate(-1)">← anterior</button>
+        <button class="modal-close-btn" onclick="closeModal()">cerrar ×</button>
+        <button class="modal-nav-btn" onclick="navigate(1)">siguiente →</button>
+      </div>
+      <div class="thumb-strip" id="thumb-strip"></div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- ════════════════════════════════
+     VISTA: SOBRE MÍ
+════════════════════════════════ -->
+<div class="view" id="view-about">
+  <header class="pub-header">
+    <div class="logo-wrap">
+      <div class="logo-title">S<em>EPET</em></div>
+      <div class="logo-sub">fotografía casual · desde 2026</div>
+    </div>
+    <nav class="nav-center">
+      <a class="nav-link" onclick="switchView('gallery'); setActiveNav(this)">galería</a>
+      <a class="nav-link active" onclick="switchView('about'); setActiveNav(this)">sobre mí</a>
+      <a class="nav-link" onclick="switchView('contact'); setActiveNav(this)">contacto</a>
+    </nav>
+    <div class="nav-right">
+      <button class="nav-tag" onclick="switchView('admin')">acceso admin</button>
+    </div>
+  </header>
+
+  <div class="about-wrap">
+    <div class="about-grid">
+      <div class="about-left">
+        <div class="about-eyebrow">— sobre mí</div>
+        <div class="about-name">SEPET</div>
+        <div class="about-divider"></div>
+        <div class="about-bio">
+          <p>Tengo 25 años, soy venezolano y llevo cuatro viviendo en Estados Unidos — tiempo suficiente para entender que un lugar nuevo siempre trae una nueva forma de mirar.</p>
+          <p>Desde pequeño las cámaras me llamaron la atención. No por técnica ni por equipo, sino por lo que hacen: detienen un segundo que de otra forma se va para siempre.</p>
+          <p>Me muevo entre el cine, la música, los viajes y los farmers markets del domingo. SEPET nació de eso — de salir sin plan y volver con algo que vale la pena guardar.</p>
+        </div>
+        <div class="about-tags">
+          <span class="about-tag">fotografía</span>
+          <span class="about-tag">video</span>
+          <span class="about-tag">cine</span>
+          <span class="about-tag">música</span>
+          <span class="about-tag">roadtrips</span>
+          <span class="about-tag">farmers markets</span>
+        </div>
+      </div>
+      <div class="about-right">
+        <div class="about-img-wrap">
+          <div class="about-img-placeholder">
+            <span class="about-img-label">— foto próximamente —</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="pub-footer">
+    <div class="footer-sig">SEPET — fotografías de paso</div>
+    <div class="footer-note">© 2026</div>
+  </footer>
+</div>
+
+<!-- ════════════════════════════════
+     VISTA: CONTACTO
+════════════════════════════════ -->
+<div class="view" id="view-contact">
+  <header class="pub-header">
+    <div class="logo-wrap">
+      <div class="logo-title">S<em>EPET</em></div>
+      <div class="logo-sub">fotografía casual · desde 2026</div>
+    </div>
+    <nav class="nav-center">
+      <a class="nav-link" onclick="switchView('gallery'); setActiveNav(this)">galería</a>
+      <a class="nav-link" onclick="switchView('about'); setActiveNav(this)">sobre mí</a>
+      <a class="nav-link active" onclick="switchView('contact'); setActiveNav(this)">contacto</a>
+    </nav>
+    <div class="nav-right">
+      <button class="nav-tag" onclick="switchView('admin')">acceso admin</button>
+    </div>
+  </header>
+
+  <div class="contact-wrap">
+    <div class="contact-grid">
+      <div class="contact-left">
+        <div class="contact-eyebrow">— contacto</div>
+        <div class="contact-title">hablemos</div>
+        <div class="contact-divider"></div>
+        <div class="contact-info">
+          <div class="contact-item">
+            <span class="contact-label">email</span>
+            <a class="contact-value" href="mailto:roswellchirinos@icloud.com">roswellchirinos@icloud.com</a>
+          </div>
+          <div class="contact-item">
+            <span class="contact-label">instagram</span>
+            <a class="contact-value" href="https://instagram.com/wellrospr" target="_blank">@wellrospr</a>
+          </div>
+        </div>
+      </div>
+      <div class="contact-right">
+        <div class="contact-form-label">— o escribime directo</div>
+        <div class="contact-form">
+          <div class="cf-field">
+            <label class="cf-label">nombre</label>
+            <input type="text" class="cf-input" placeholder="tu nombre" id="cf-name"/>
+          </div>
+          <div class="cf-field">
+            <label class="cf-label">email</label>
+            <input type="email" class="cf-input" placeholder="tu@email.com" id="cf-email"/>
+          </div>
+          <div class="cf-field">
+            <label class="cf-label">mensaje</label>
+            <textarea class="cf-textarea" placeholder="escribí lo que quieras..." id="cf-msg"></textarea>
+          </div>
+          <div class="cf-actions">
+            <button class="cf-btn" onclick="sendContact()">enviar mensaje →</button>
+          </div>
+          <div class="cf-feedback" id="cf-feedback"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="pub-footer">
+    <div class="footer-sig">SEPET — fotografías de paso</div>
+    <div class="footer-note">© 2026</div>
+  </footer>
+</div>
+
+<!-- ════════════════════════════════
+     VISTA: ADMIN
+════════════════════════════════ -->
+<div class="view" id="view-admin">
+  <div class="admin-wrap">
+
+    <aside class="sidebar">
+      <div class="sidebar-logo">S<span>EPET</span></div>
+      <div class="nav-section-lbl">contenido</div>
+      <button class="adm-nav-item active" onclick="showAdmPanel('dashboard',this)">— inicio</button>
+      <button class="adm-nav-item" onclick="showAdmPanel('nueva',this)">— nueva entrada</button>
+      <button class="adm-nav-item" onclick="showAdmPanel('entradas',this)">— entradas</button>
+      <button class="adm-nav-item" onclick="showAdmPanel('etiquetas',this)">— etiquetas</button>
+      <div class="nav-section-lbl">sitio</div>
+      <button class="adm-nav-item" onclick="showAdmPanel('apariencia',this)">— apariencia</button>
+      <button class="adm-nav-item" onclick="showAdmPanel('ajustes',this)">— ajustes</button>
+      <div class="sidebar-bottom">
+        <button class="logout-btn" onclick="switchView('gallery')">← volver al sitio</button>
+      </div>
+    </aside>
+
+    <main class="adm-main">
+      <div class="adm-topbar">
+        <span class="adm-topbar-title" id="adm-topbar-label">inicio</span>
+        <button class="new-post-btn" onclick="showAdmPanel('nueva', document.querySelectorAll('.adm-nav-item')[1])">+ nueva entrada</button>
+      </div>
+
+      <div class="adm-content">
+
+        <!-- DASHBOARD -->
+        <div class="adm-panel active" id="adm-panel-dashboard">
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-label">fotos subidas</div>
+              <div class="stat-val">11</div>
+              <div class="stat-sub up">primer test</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">entradas</div>
+              <div class="stat-val">11</div>
+              <div class="stat-sub">0 borradores</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">etiquetas</div>
+              <div class="stat-val">6</div>
+              <div class="stat-sub">calle, luz, noche…</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">estado</div>
+              <div class="stat-val" style="font-size:1rem;color:var(--sage);padding-top:4px;">local</div>
+              <div class="stat-sub up">archivo .html</div>
+            </div>
+          </div>
+
+          <div class="section-head">
+            <span class="section-lbl">entradas recientes</span>
+            <button class="view-all-btn" onclick="showAdmPanel('entradas',document.querySelectorAll('.adm-nav-item')[2])">ver todas</button>
+          </div>
+          <table class="posts-table">
+            <thead><tr><th style="width:40%">entrada</th><th>etiqueta</th><th>fecha</th><th>estado</th><th style="width:120px">acciones</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><div class="post-title-cell"><img class="post-thumb" src="CameraTest2/First.jpg" onerror="this.src='https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=120&q=60'"/><div><div class="post-title-text">First</div><div class="post-title-sub">entrada destacada</div></div></div></td>
+                <td>—</td>
+                <td style="color:#3a3530;font-size:10px;">abr 2026</td>
+                <td><span class="photo-tag tag-pub">publicada</span></td>
+                <td><div class="row-actions"><button class="row-btn" onclick="showAdmPanel('nueva',document.querySelectorAll('.adm-nav-item')[1])">editar</button></div></td>
+              </tr>
+              <tr>
+                <td><div class="post-title-cell"><img class="post-thumb" src="CameraTest2/20260410_070031A.jpg" onerror="this.src='https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=120&q=60'"/><div><div class="post-title-text">07:00</div></div></div></td>
+                <td><span class="photo-tag tag-calle" style="font-size:8px;">calle</span></td>
+                <td style="color:#3a3530;font-size:10px;">abr 2026</td>
+                <td><span class="photo-tag tag-pub">publicada</span></td>
+                <td><div class="row-actions"><button class="row-btn">editar</button></div></td>
+              </tr>
+              <tr>
+                <td><div class="post-title-cell"><img class="post-thumb" src="CameraTest2/20260410_0718144.jpg" onerror="this.src='https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=120&q=60'"/><div><div class="post-title-text">07:18</div></div></div></td>
+                <td><span class="photo-tag tag-luz" style="font-size:8px;">luz</span></td>
+                <td style="color:#3a3530;font-size:10px;">abr 2026</td>
+                <td><span class="photo-tag tag-pub">publicada</span></td>
+                <td><div class="row-actions"><button class="row-btn">editar</button></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- NUEVA ENTRADA -->
+        <div class="adm-panel" id="adm-panel-nueva">
+          <div class="upload-zone" onclick="document.getElementById('file-input').click()">
+            <svg class="upload-svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#c4895a" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <div class="upload-text">arrastrá tu foto acá<br>o <strong>hacé click para seleccionar</strong></div>
+            <div class="upload-sub">jpg, png, webp — máx 20mb</div>
+          </div>
+          <input type="file" id="file-input" accept="image/*" style="display:none" onchange="previewImage(event)"/>
+          <div class="img-preview-wrap" id="img-preview-wrap">
+            <img class="img-preview" id="img-preview" src="" alt=""/>
+            <div class="img-preview-label" id="img-preview-label"></div>
+          </div>
+          <div class="form-grid">
+            <div class="form-field full"><label class="form-label">título de la entrada</label><input type="text" class="form-input" placeholder="¿cómo llamás a esta foto o momento?"></div>
+            <div class="form-field full"><label class="form-label">texto / historia</label><textarea class="form-textarea" placeholder="contá algo sobre esta foto, o dejalo en blanco si la imagen habla sola..."></textarea></div>
+            <div class="form-field"><label class="form-label">etiquetas</label><input type="text" class="form-input" placeholder="calle, luz, noche..."></div>
+            <div class="form-field"><label class="form-label">fecha</label><input type="date" class="form-input"></div>
+            <div class="form-field"><label class="form-label">destacar en portada</label><select class="form-select"><option>no destacar</option><option>sí, poner como featured</option></select></div>
+            <div class="form-field"><label class="form-label">visibilidad</label><select class="form-select"><option>pública</option><option>privada (solo yo)</option></select></div>
+          </div>
+          <div class="form-actions">
+            <button class="btn-draft">guardar borrador</button>
+            <button class="btn-pub" onclick="publishEntry()">publicar entrada</button>
+          </div>
+        </div>
+
+        <!-- ENTRADAS -->
+        <div class="adm-panel" id="adm-panel-entradas">
+          <div class="section-head" style="margin-bottom:1.25rem;">
+            <span class="section-lbl">todas las entradas (11)</span>
+            <select class="form-select" style="width:auto;font-size:10px;padding:5px 10px;"><option>todas</option><option>publicadas</option><option>borradores</option></select>
+          </div>
+          <table class="posts-table">
+            <thead><tr><th style="width:40%">entrada</th><th>etiqueta</th><th>fecha</th><th>estado</th><th style="width:120px">acciones</th></tr></thead>
+            <tbody id="entries-tbody">
+              <!-- generado por JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ETIQUETAS -->
+        <div class="adm-panel" id="adm-panel-etiquetas">
+          <div class="section-head" style="margin-bottom:1.5rem;">
+            <span class="section-lbl">gestión de etiquetas</span>
+          </div>
+
+          <div class="form-grid" style="margin-bottom:1.5rem;">
+            <div class="form-field full">
+              <label class="form-label">agregar etiqueta nueva</label>
+              <div style="display:flex;gap:10px;">
+                <input type="text" class="form-input" id="new-tag-input" placeholder="ej: paisaje, arquitectura, urbano..." style="flex:1;"/>
+                <button class="btn-pub" onclick="addTag()" style="white-space:nowrap;">+ agregar</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-head" style="margin-bottom:1rem;">
+            <span class="section-lbl">etiquetas activas</span>
+          </div>
+          <div id="tags-list" style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:2rem;"></div>
+
+          <div style="padding:1rem;border:1px solid var(--border);border-radius:2px;background:var(--bg-footer);">
+            <div class="form-label" style="margin-bottom:0.75rem;">vista previa filtros</div>
+            <div id="tags-preview" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+          </div>
+        </div>
+
+        <!-- APARIENCIA -->
+        <div class="adm-panel" id="adm-panel-apariencia">
+          <div class="section-head"><span class="section-lbl">paleta activa</span></div>
+          <div class="pal-row">
+            <div class="pal-dot" style="background:#100d09;border:1px solid #2a2318;" title="fondo"></div>
+            <div class="pal-dot" style="background:#150f08;" title="card"></div>
+            <div class="pal-dot" style="background:#c4895a;" title="ámbar"></div>
+            <div class="pal-dot" style="background:#d4a574;" title="ámbar claro"></div>
+            <div class="pal-dot" style="background:#e8dece;" title="beige claro"></div>
+            <div class="pal-dot" style="background:#c9bca8;" title="beige medio"></div>
+            <div class="pal-dot" style="background:#a08c78;" title="beige oscuro"></div>
+            <div class="pal-dot" style="background:#7a8c72;" title="salvia"></div>
+            <div class="pal-dot" style="background:#5c6e54;" title="salvia oscuro"></div>
+            <div class="pal-dot" style="background:#4a7a8a;" title="petróleo"></div>
+            <div class="pal-dot" style="background:#7a4a8a;" title="violeta"></div>
+          </div>
+          <div class="form-grid">
+            <div class="form-field full"><label class="form-label">nombre del sitio</label><input type="text" class="form-input" value="SEPET"></div>
+            <div class="form-field full"><label class="form-label">descripción corta</label><input type="text" class="form-input" value="fotografía casual · desde 2026"></div>
+            <div class="form-field"><label class="form-label">columnas en galería</label><select class="form-select"><option selected>2 columnas</option><option>3 columnas</option></select></div>
+            <div class="form-field"><label class="form-label">orden por defecto</label><select class="form-select"><option>más reciente primero</option><option>más antigua primero</option></select></div>
+          </div>
+          <div class="form-actions"><button class="btn-pub">guardar cambios</button></div>
+        </div>
+
+        <!-- AJUSTES -->
+        <div class="adm-panel" id="adm-panel-ajustes">
+          <div class="form-grid">
+            <div class="form-field full"><label class="form-label">contraseña admin</label><input type="password" class="form-input" placeholder="nueva contraseña"></div>
+            <div class="form-field full"><label class="form-label">confirmar contraseña</label><input type="password" class="form-input" placeholder="repetir contraseña"></div>
+            <div class="form-field"><label class="form-label">dominio / url del sitio</label><input type="text" class="form-input" placeholder="sepet.com"></div>
+            <div class="form-field"><label class="form-label">modo mantenimiento</label><select class="form-select"><option>desactivado — sitio visible</option><option>activado — sitio oculto</option></select></div>
+          </div>
+          <div class="form-actions"><button class="btn-pub">guardar ajustes</button></div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div><!-- /view-admin -->
+
+
+<script>
+  let photos = [];
+  let editingId = null;
+
+  async function loadEntries() {
+    try {
+      const res = await fetch('/api/entries');
+      const entries = await res.json();
+      photos = entries.map(e => ({
+        id: e.id,
+        src: '/uploads/' + e.filename,
+        fallback: 'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=1000&q=85',
+        title: e.title,
+        eyebrow: e.tags || 'sin etiqueta',
+        tags: (e.tags || '').split(',').filter(t => t.trim()).map(t => ({ l: t.trim(), c: 'tag-' + t.trim() })),
+        text: e.text || '',
+        date: e.date
+      }));
+      renderGallery();
+      loadFeatured();
+    } catch(err) { console.error('Error cargando entradas:', err); }
+  }
+
+  async function loadFeatured() {
+    try {
+      const res = await fetch('/api/entries/featured');
+      const entry = await res.json();
+      const wrap = document.querySelector('.featured-wrap');
+      if (!entry) {
+        if (wrap) wrap.style.display = 'none';
+        return;
+      }
+      if (wrap) wrap.style.display = '';
+      const fi = document.querySelector('.featured-img');
+      const ft = document.querySelector('.featured-title');
+      const fe = document.querySelector('.featured-excerpt');
+      const fg = document.querySelector('.featured-tag');
+      const fd = document.querySelector('.featured-date');
+      const fc = document.querySelector('.featured-card');
+      if (fi) { fi.src = '/uploads/' + entry.filename; fi.onerror = () => {}; }
+      if (ft) ft.textContent = entry.title;
+      if (fe) fe.textContent = entry.text || '';
+      if (fg) fg.textContent = entry.tags || 'sin etiqueta';
+      if (fd) fd.textContent = entry.date;
+      if (fc) fc.onclick = () => { const idx = photos.findIndex(p => p.id === entry.id); if (idx >= 0) openModal(idx); };
+    } catch(err) { console.error(err); }
+  }
+
+  function renderGallery() {
+    const grid = document.getElementById('gallery-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    photos.forEach((p, i) => {
+      const card = document.createElement('div');
+      card.className = 'photo-card';
+      card.dataset.tags = p.tags.map(t => t.l).join(' ');
+      card.addEventListener('click', () => openModal(i));
+      const tagsHtml = p.tags.map(t => '<span class="photo-tag ' + t.c + '">' + t.l + '</span>').join('');
+      card.innerHTML =
+        '<div class="photo-frame">' +
+        '<img class="photo-img" src="' + p.src + '" alt="" onerror="this.src=this.dataset.fb" data-fb="' + p.fallback + '"/>' +
+        '<div class="photo-overlay"><div class="overlay-title">' + p.title + '</div></div>' +
+        '</div>' +
+        '<div class="photo-footer">' +
+        '<div class="photo-meta-left">' +
+        '<span class="photo-title-txt">' + p.title + '</span>' +
+        '<span class="photo-date-txt">' + p.date + '</span>' +
+        '</div>' +
+        '<div class="photo-tags">' + tagsHtml + '</div>' +
+        '</div>';
+      grid.appendChild(card);
+    });
+    const count = photos.length + ' foto' + (photos.length !== 1 ? 's' : '');
+    const gc = document.getElementById('gallery-count');
+    const pc = document.getElementById('photo-count');
+    if (gc) gc.textContent = count;
+    if (pc) pc.textContent = photos.length + ' fotos';
+    buildEntriesTable();
+  }
+
+  let current = 0;
+
+  function openModal(i) {
+    current = i;
+    renderModal();
+    document.getElementById('modal').classList.add('open');
+  }
+
+  function getExifOrientation(src, callback) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', src, true);
+    xhr.responseType = 'arraybuffer';
+    xhr.onload = function() {
+      try {
+        const view = new DataView(xhr.response);
+        if (view.getUint16(0, false) !== 0xFFD8) { callback(1); return; }
+        let offset = 2;
+        while (offset < view.byteLength) {
+          if (view.getUint16(offset, false) === 0xFFE1) {
+            offset += 4;
+            if (view.getUint32(offset, false) !== 0x45786966) { callback(1); return; }
+            const little = view.getUint16(offset += 6, false) === 0x4949;
+            offset += view.getUint32(offset + 4, little);
+            const tags = view.getUint16(offset, little);
+            offset += 2;
+            for (let j = 0; j < tags; j++) {
+              if (view.getUint16(offset + (j * 12), little) === 0x0112) {
+                callback(view.getUint16(offset + (j * 12) + 8, little)); return;
+              }
+            }
+          }
+          offset += 2 + view.getUint16(offset + 2, false);
+        }
+        callback(1);
+      } catch(e) { callback(1); }
+    };
+    xhr.onerror = () => callback(1);
+    xhr.send();
+  }
+
+  function applyExifRotation(img, orientation) {
+    const map = { 1:'rotate(0deg)', 3:'rotate(180deg)', 6:'rotate(90deg)', 8:'rotate(-90deg)' };
+    img.style.transform = map[orientation] || 'rotate(0deg)';
+  }
+
+  function renderModal() {
+    const d = photos[current];
+    if (!d) return;
+    const img = document.getElementById('modal-img');
+    img.style.transform = 'rotate(0deg)';
+    img.src = d.src;
+    img.onerror = () => { img.src = d.fallback; };
+    img.onload = () => { getExifOrientation(d.src, o => applyExifRotation(img, o)); };
+    document.getElementById('modal-img-title').textContent = d.title;
+    document.getElementById('modal-eyebrow').textContent = d.eyebrow;
+    document.getElementById('modal-excerpt').textContent = d.text || '— sin texto —';
+    document.getElementById('modal-date').textContent = d.date;
+    const tagsEl = document.getElementById('modal-tags');
+    tagsEl.innerHTML = d.tags.map(t => '<span class="photo-tag ' + t.c + '">' + t.l + '</span>').join('');
+    buildThumbs();
+  }
+
+  function buildThumbs() {
+    const strip = document.getElementById('thumb-strip');
+    if (!strip) return;
+    strip.innerHTML = '';
+    photos.forEach((p, i) => {
+      const div = document.createElement('div');
+      div.className = 'thumb' + (i === current ? ' active' : '');
+      div.addEventListener('click', () => openModal(i));
+      const img = document.createElement('img');
+      img.src = p.src;
+      img.onerror = () => { img.src = p.fallback; };
+      div.appendChild(img);
+      strip.appendChild(div);
+    });
+  }
+
+  function navigate(dir) {
+    current = (current + dir + photos.length) % photos.length;
+    renderModal();
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('open');
+  }
+
+  function handleBgClick(e) {
+    if (e.target === document.getElementById('modal')) closeModal();
+  }
+
+  document.addEventListener('keydown', e => {
+    if (!document.getElementById('modal').classList.contains('open')) return;
+    if (e.key === 'ArrowRight') navigate(1);
+    if (e.key === 'ArrowLeft')  navigate(-1);
+    if (e.key === 'Escape')     closeModal();
+  });
+
+  function filterPhotos(btn, tag) {
+    document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const cards = document.querySelectorAll('#gallery-grid .photo-card');
+    let visible = 0;
+    cards.forEach(card => {
+      const tags = card.dataset.tags || '';
+      const show = tag === 'todo' || tags.includes(tag);
+      card.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    const gc = document.getElementById('gallery-count');
+    if (gc) gc.textContent = visible + ' foto' + (visible !== 1 ? 's' : '');
+  }
+
+  function switchView(view) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + view).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function showAdmPanel(id, btn) {
+    document.querySelectorAll('.adm-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.adm-nav-item').forEach(n => n.classList.remove('active'));
+    const p = document.getElementById('adm-panel-' + id);
+    if (p) p.classList.add('active');
+    if (btn) btn.classList.add('active');
+    const labels = { dashboard: 'inicio', nueva: 'nueva entrada', entradas: 'entradas', etiquetas: 'etiquetas', apariencia: 'apariencia', ajustes: 'ajustes' };
+    document.getElementById('adm-topbar-label').textContent = labels[id] || id;
+    if (id === 'etiquetas') renderTagsList();
+  }
+
+  function previewImage(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('img-preview').src = e.target.result;
+      document.getElementById('img-preview-label').textContent = file.name;
+      document.getElementById('img-preview-wrap').classList.add('show');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function resetForm() {
+    editingId = null;
+    document.querySelectorAll('#adm-panel-nueva .form-input').forEach(i => i.value = '');
+    const ta = document.querySelector('#adm-panel-nueva .form-textarea');
+    if (ta) ta.value = '';
+    const fi = document.getElementById('file-input');
+    if (fi) fi.value = '';
+    document.getElementById('img-preview-wrap').classList.remove('show');
+    const btn = document.querySelector('#adm-panel-nueva .btn-pub');
+    if (btn) btn.textContent = 'publicar entrada';
+  }
+
+  function editEntry(id) {
+    const entry = photos.find(p => p.id === id);
+    if (!entry) return;
+    editingId = id;
+    const inputs = document.querySelectorAll('#adm-panel-nueva .form-input');
+    const ta = document.querySelector('#adm-panel-nueva .form-textarea');
+    if (inputs[0]) inputs[0].value = entry.title;
+    if (ta) ta.value = entry.text || '';
+    if (inputs[1]) inputs[1].value = entry.tags.map(t => t.l).join(', ');
+    if (inputs[2]) inputs[2].value = entry.date;
+    const previewImg = document.getElementById('img-preview');
+    if (previewImg) previewImg.src = entry.src;
+    const previewLabel = document.getElementById('img-preview-label');
+    if (previewLabel) previewLabel.textContent = 'foto actual — seleccioná una nueva para reemplazarla';
+    document.getElementById('img-preview-wrap').classList.add('show');
+    const btn = document.querySelector('#adm-panel-nueva .btn-pub');
+    if (btn) btn.textContent = 'guardar cambios';
+    showAdmPanel('nueva', document.querySelectorAll('.adm-nav-item')[1]);
+    window.scrollTo(0, 0);
+  }
+
+  async function deleteEntry(id) {
+    const entry = photos.find(p => p.id === id);
+    const title = entry ? entry.title : 'esta entrada';
+    if (!confirm('\u00bfBorrar "' + title + '"? Esta acción no se puede deshacer.')) return;
+    try {
+      const res = await fetch('/api/entries/' + id, { method: 'DELETE' });
+      const data = await res.json();
+      if (data.ok) {
+        await loadEntries();
+      } else {
+        alert('Error al borrar: ' + data.error);
+      }
+    } catch(err) {
+      alert('Error: ' + err.message);
+    }
+  }
+
+  async function publishEntry() {
+    const fileInput = document.getElementById('file-input');
+    const inputs  = document.querySelectorAll('#adm-panel-nueva .form-input');
+    const ta      = document.querySelector('#adm-panel-nueva .form-textarea');
+    const selects = document.querySelectorAll('#adm-panel-nueva .form-select');
+    if (!editingId && (!fileInput || !fileInput.files[0])) { alert('Seleccioná una foto primero'); return; }
+    const formData = new FormData();
+    if (fileInput && fileInput.files[0]) formData.append('photo', fileInput.files[0]);
+    formData.append('title',      (inputs[0] && inputs[0].value) || 'Sin título');
+    formData.append('text',       (ta && ta.value) || '');
+    formData.append('tags',       (inputs[1] && inputs[1].value) || '');
+    formData.append('date',       (inputs[2] && inputs[2].value) || new Date().toISOString().split('T')[0]);
+    formData.append('featured',   (selects[0] && selects[0].value.includes('sí')) ? '1' : '0');
+    formData.append('visibility', (selects[1] && selects[1].value === 'pública') ? 'public' : 'private');
+    const btn = document.querySelector('#adm-panel-nueva .btn-pub');
+    try {
+      if (btn) { btn.textContent = editingId ? 'guardando...' : 'publicando...'; btn.disabled = true; }
+      const url    = editingId ? '/api/entries/' + editingId : '/api/entries';
+      const method = editingId ? 'PUT' : 'POST';
+      const res    = await fetch(url, { method: method, body: formData });
+      const data   = await res.json();
+      if (data.ok) {
+        alert(editingId ? '\u2705 Entrada actualizada' : '\u2705 Entrada publicada');
+        resetForm();
+        await loadEntries();
+        showAdmPanel('entradas', document.querySelectorAll('.adm-nav-item')[2]);
+      } else {
+        alert('Error: ' + data.error);
+      }
+    } catch(err) {
+      alert('Error: ' + err.message);
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = editingId ? 'guardar cambios' : 'publicar entrada'; }
+    }
+  }
+
+  function buildEntriesTable() {
+    const tbody = document.getElementById('entries-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    photos.forEach(p => {
+      const tr = document.createElement('tr');
+      const tagHtml = p.tags.length ? '<span class="photo-tag ' + p.tags[0].c + '" style="font-size:8px;">' + p.tags[0].l + '</span>' : '—';
+      tr.innerHTML =
+        '<td><div class="post-title-cell">' +
+        '<img class="post-thumb" src="' + p.src + '" onerror="this.src=this.dataset.fb" data-fb="' + p.fallback + '" alt=""/>' +
+        '<div><div class="post-title-text">' + p.title + '</div></div>' +
+        '</div></td>' +
+        '<td>' + tagHtml + '</td>' +
+        '<td style="color:#3a3530;font-size:10px;">' + p.date + '</td>' +
+        '<td><span class="photo-tag tag-pub">publicada</span></td>' +
+        '<td><div class="row-actions"></div></td>';
+      tbody.appendChild(tr);
+      const actions = tr.querySelector('.row-actions');
+      const editBtn = document.createElement('button');
+      editBtn.className = 'row-btn';
+      editBtn.textContent = 'editar';
+      editBtn.addEventListener('click', () => editEntry(p.id));
+      const delBtn = document.createElement('button');
+      delBtn.className = 'row-btn del';
+      delBtn.textContent = 'borrar';
+      delBtn.addEventListener('click', () => deleteEntry(p.id));
+      actions.appendChild(editBtn);
+      actions.appendChild(delBtn);
+    });
+  }
+
+  /* ── ETIQUETAS ── */
+  let activeTags = ['calle', 'luz', 'noche', 'gente', 'textura', 'retrato'];
+
+  function renderTagsList() {
+    const list = document.getElementById('tags-list');
+    const preview = document.getElementById('tags-preview');
+    if (!list) return;
+    list.innerHTML = '';
+    activeTags.forEach((tag, i) => {
+      const item = document.createElement('div');
+      item.className = 'tag-item';
+      item.innerHTML =
+        '<span class="tag-item-name">' + tag + '</span>' +
+        '<button class="tag-item-del" onclick="removeTag(' + i + ')">×</button>';
+      list.appendChild(item);
+    });
+    if (preview) {
+      preview.innerHTML = '<button class="tag-btn active" style="font-size:10px;padding:4px 12px;">todo</button>' +
+        activeTags.map(t => '<button class="tag-btn" style="font-size:10px;padding:4px 12px;">' + t + '</button>').join('');
+    }
+    // Update gallery filter bar
+    const filterBar = document.getElementById('filter-bar');
+    if (filterBar) {
+      filterBar.innerHTML = '';
+      const allBtn = document.createElement('button');
+      allBtn.className = 'tag-btn active';
+      allBtn.textContent = 'todo';
+      allBtn.addEventListener('click', function(){ filterPhotos(this, 'todo'); });
+      filterBar.appendChild(allBtn);
+      activeTags.forEach(t => {
+        const btn = document.createElement('button');
+        btn.className = 'tag-btn';
+        btn.textContent = t;
+        btn.addEventListener('click', function(){ filterPhotos(this, t); });
+        filterBar.appendChild(btn);
+      });
+    }
+    // Save to localStorage
+    try { localStorage.setItem('sepet_tags', JSON.stringify(activeTags)); } catch(e) {}
+  }
+
+  function addTag() {
+    const input = document.getElementById('new-tag-input');
+    const val = input.value.trim().toLowerCase().replace(/\s+/g, '-');
+    if (!val) return;
+    if (activeTags.includes(val)) { input.value = ''; return; }
+    activeTags.push(val);
+    input.value = '';
+    renderTagsList();
+  }
+
+  function removeTag(i) {
+    if (!confirm('\u00bfQuitar la etiqueta "' + activeTags[i] + '"?')) return;
+    activeTags.splice(i, 1);
+    renderTagsList();
+  }
+
+  // Load saved tags
+  try {
+    const saved = localStorage.getItem('sepet_tags');
+    if (saved) activeTags = JSON.parse(saved);
+  } catch(e) {}
+
+  function setActiveNav(el) {
+    document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
+    document.querySelectorAll('.nav-center .nav-link').forEach(a => {
+      if (a.textContent.trim() === el.textContent.trim()) a.classList.add('active');
+    });
+  }
+
+  function sendContact() {
+    const name  = document.getElementById('cf-name').value.trim();
+    const email = document.getElementById('cf-email').value.trim();
+    const msg   = document.getElementById('cf-msg').value.trim();
+    const fb    = document.getElementById('cf-feedback');
+    if (!name || !email || !msg) { fb.textContent = 'completá todos los campos antes de enviar.'; fb.style.color = '#c4895a'; return; }
+    fb.textContent = 'mensaje enviado — gracias por escribir.';
+    fb.style.color = 'var(--sage)';
+    document.getElementById('cf-name').value = '';
+    document.getElementById('cf-email').value = '';
+    document.getElementById('cf-msg').value = '';
+  }
+
+  buildEntriesTable();
+  loadEntries();
+</script>
+
+</body>
+</html>
