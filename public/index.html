@@ -314,6 +314,23 @@
   .tag-item-name { font-size:11px; color:var(--text-sec); letter-spacing:0.06em; }
   .tag-item-del { font-size:11px; color:var(--text-fnt); background:none; border:none; cursor:pointer; font-family:"DM Mono",monospace; padding:0; transition:color 0.2s; line-height:1; }
   .tag-item-del:hover { color:#c4595a; }
+
+  /* ── LOGIN ── */
+  .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; background: var(--bg); }
+  .login-box { width: 100%; max-width: 360px; border: 1px solid var(--border); border-radius: 2px; padding: 2.5rem 2rem; background: #0f0d0b; }
+  .login-logo { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--text-pri); letter-spacing: -0.01em; margin-bottom: 4px; }
+  .login-logo em { font-style: italic; color: var(--amber); }
+  .login-sub { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-fnt); margin-bottom: 1.75rem; }
+  .login-divider { width: 28px; height: 1px; background: var(--amber); margin-bottom: 1.75rem; }
+  .login-form { display: flex; flex-direction: column; gap: 1.25rem; }
+  .lf-field { display: flex; flex-direction: column; gap: 6px; }
+  .lf-label { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-dim); }
+  .lf-input { background: var(--bg-card); border: 1px solid var(--border); border-radius: 2px; padding: 10px 14px; font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-sec); outline: none; transition: border-color 0.2s; }
+  .lf-input:focus { border-color: var(--amber); }
+  .lf-input::placeholder { color: var(--text-fnt); }
+  .lf-error { font-size: 10px; color: #c4595a; min-height: 16px; letter-spacing: 0.06em; }
+  .lf-btn { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; padding: 10px 24px; background: var(--amber); color: var(--bg); border: none; border-radius: 2px; cursor: pointer; transition: background 0.2s; margin-top: 0.5rem; }
+  .lf-btn:hover { background: var(--amber-lt); }
 </style>
 </head>
 <body>
@@ -544,6 +561,31 @@
 </div>
 
 <!-- ════════════════════════════════
+     VISTA: LOGIN
+════════════════════════════════ -->
+<div class="view" id="view-login">
+  <div class="login-wrap">
+    <div class="login-box">
+      <div class="login-logo">S<em>EPET</em></div>
+      <div class="login-sub">panel de administración</div>
+      <div class="login-divider"></div>
+      <div class="login-form">
+        <div class="lf-field">
+          <label class="lf-label">usuario</label>
+          <input type="text" class="lf-input" id="login-user" placeholder="usuario" autocomplete="off"/>
+        </div>
+        <div class="lf-field">
+          <label class="lf-label">contraseña</label>
+          <input type="password" class="lf-input" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter') doLogin()"/>
+        </div>
+        <div class="lf-error" id="login-error"></div>
+        <button class="lf-btn" onclick="doLogin()">entrar →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
      VISTA: ADMIN
 ════════════════════════════════ -->
 <div class="view" id="view-admin">
@@ -560,7 +602,7 @@
       <button class="adm-nav-item" onclick="showAdmPanel('apariencia',this)">— apariencia</button>
       <button class="adm-nav-item" onclick="showAdmPanel('ajustes',this)">— ajustes</button>
       <div class="sidebar-bottom">
-        <button class="logout-btn" onclick="switchView('gallery')">← volver al sitio</button>
+        <button class="logout-btn" onclick="doLogout()">← volver al sitio</button>
       </div>
     </aside>
 
@@ -932,9 +974,34 @@
   }
 
   function switchView(view) {
+    if (view === 'admin') {
+      try {
+        if (sessionStorage.getItem('sepet_auth') !== 'ok') {
+          document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+          document.getElementById('view-login').classList.add('active');
+          window.scrollTo(0, 0);
+          return;
+        }
+      } catch(e) {}
+    }
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.getElementById('view-' + view).classList.add('active');
     window.scrollTo(0, 0);
+  }
+
+  function doLogin() {
+    const user = document.getElementById('login-user').value;
+    const pass = document.getElementById('login-pass').value;
+    const err  = document.getElementById('login-error');
+    if (user === 'sepet.13' && pass === 'Archie.26') {
+      try { sessionStorage.setItem('sepet_auth', 'ok'); } catch(e) {}
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.getElementById('view-admin').classList.add('active');
+      window.scrollTo(0, 0);
+    } else {
+      err.textContent = 'usuario o contraseña incorrectos';
+      document.getElementById('login-pass').value = '';
+    }
   }
 
   function showAdmPanel(id, btn) {
@@ -1139,6 +1206,11 @@
     const saved = localStorage.getItem('sepet_tags');
     if (saved) activeTags = JSON.parse(saved);
   } catch(e) {}
+
+  function doLogout() {
+    try { sessionStorage.removeItem('sepet_auth'); } catch(e) {}
+    switchView('gallery');
+  }
 
   function setActiveNav(el) {
     document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
